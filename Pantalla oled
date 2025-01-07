@@ -1,22 +1,27 @@
-from machine import Pin, I2C
-import ssd1306
-import time
+#include <Wire.h>            // librería para bus I2C
+#include <Adafruit_GFX.h>    // librería para pantallas gráficas
+#include <Adafruit_SSD1306.h> // librería para controlador SSD1306
 
- 
-i2c = I2C(0, scl=Pin(22), sda=Pin(21))
+#define ANCHO 128           // reemplaza ocurrencia de ANCHO por 128
+#define ALTO 64             // reemplaza ocurrencia de ALTO por 64
 
-oled_width = 128
-oled_height = 64
-oled = ssd1306.SSD1306_I2C(oled_width, oled_height, i2c)
+#define OLED_RESET 4        // necesario por la librería pero no usado
+Adafruit_SSD1306 oled(ANCHO, ALTO, &Wire, OLED_RESET); // crea objeto
 
+void setup() {
+  Wire.begin();             // inicializa bus I2C
+    oled.begin(SSD1306_SWITCHCAPVCC, 0x3C); // inicializa pantalla con dirección 0x3C
+    }
 
-oled.text("Hola mundo", 10, 10)
-
-
-for i in range(1, 11):
-    oled.fill(0)
-    oled.text("Hola mundo", 10, 10)
-    oled.text(f"Cuenta: {i}", 10, 30)  
-    oled.show()
-    time.sleep(1)   
-
+    void loop() {
+      oled.clearDisplay();      // limpia pantalla
+        oled.setTextColor(WHITE); // establece color al único disponible (pantalla monocromática)
+          oled.setCursor(0, 0);     // ubica cursor en inicio de coordenadas 0,0
+            oled.setTextSize(1);      // establece tamaño de texto en 1
+              oled.print("Hola, mundo"); // escribe en pantalla el texto
+                oled.setCursor(10, 30);   // ubica cursor en coordenadas 10,30
+                  oled.setTextSize(2);      // establece tamaño de texto en 2
+                    oled.print(millis() / 1000); // escribe el valor de millis() dividido por 1000
+                      oled.print(" seg.");      // escribe texto
+                        oled.display();           // muestra en pantalla todo lo establecido anteriormente
+                        }
